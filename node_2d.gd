@@ -99,6 +99,7 @@ func _on_play_pressed():
 	# Chuyển sang màn chơi chính
 	get_tree().change_scene_to_file("res://game.tscn")
 
+func _on_save_pressed():
 	Global.player_hp = 100.0
 	Global.player_food = 100.0
 	Global.player_position = Vector2.ZERO
