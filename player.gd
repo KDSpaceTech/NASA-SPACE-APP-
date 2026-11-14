@@ -25,15 +25,9 @@ signal hp_changed(new_hp: float)
 signal food_changed(new_food: float)
 
 func _ready() -> void:
-	# Generate surrounding map once.
+	# Generate surrounding map once (deferred to avoid busy parent).
 	if get_parent() and not get_parent().has_node("Map"):
-		var ms = load("res://map.gd")
-		if ms:
-			var m = Node2D.new()
-			m.name = "Map"
-			m.set_script(ms)
-			get_parent().add_child(m)
-			get_parent().move_child(m, 0)
+		call_deferred("_create_map")
 
 	if Global.has_save():
 		Global.load_game()
@@ -207,3 +201,16 @@ void fragment() {
 	if camera:
 		var zoom_tween = create_tween()
 		zoom_tween.tween_property(camera, "zoom", Vector2(1.6, 1.6), 0.45).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+func _create_map() -> void:
+	print("CREATE MAP CALLED")
+	var ms = load("res://map.gd")
+	if ms == null or get_parent() == null:
+		return
+	if get_parent().has_node("Map"):
+		return
+	var m = Node2D.new()
+	m.name = "Map"
+	m.set_script(ms)
+	get_parent().add_child(m)
+	get_parent().move_child(m, 0)

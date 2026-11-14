@@ -7,7 +7,7 @@ const H := 900.0
 func _ready() -> void:
 	# Floor base
 	var floor = ColorRect.new()
-	floor.color = Color(0.06, 0.10, 0.16, 1.0)
+	floor.color = Color(0.12, 0.18, 0.28, 1.0)
 	floor.size = Vector2(W, H)
 	floor.position = Vector2(-W/2, -H/2)
 	add_child(floor)
@@ -16,7 +16,7 @@ func _ready() -> void:
 	for x in range(-5, 6):
 		for y in range(-4, 5):
 			var tile = ColorRect.new()
-			tile.color = Color(0.10, 0.16, 0.24, 1.0)
+			tile.color = Color(0.18, 0.25, 0.38, 1.0)
 			tile.size = Vector2(100, 100)
 			tile.position = Vector2(x*110 - 50, y*110 - 50)
 			add_child(tile)
@@ -27,14 +27,14 @@ func _ready() -> void:
 		v.add_point(Vector2(i*110, -H/2))
 		v.add_point(Vector2(i*110, H/2))
 		v.width = 1.0
-		v.default_color = Color(0.2, 0.4, 0.6, 0.5)
+		v.default_color = Color(0.35, 0.6, 0.85, 0.7)
 		add_child(v)
 	for i in range(-4, 5):
 		var h = Line2D.new()
 		h.add_point(Vector2(-W/2, i*110))
 		h.add_point(Vector2(W/2, i*110))
 		h.width = 1.0
-		h.default_color = Color(0.2, 0.4, 0.6, 0.5)
+		h.default_color = Color(0.35, 0.6, 0.85, 0.7)
 		add_child(h)
 
 	# Walls (border)
