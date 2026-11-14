@@ -176,7 +176,7 @@ void fragment() {
 	# Message centered on character.
 	var label = Label.new()
 	label.text = "Y O U   D I E"
-	var spawn_pos = sprite.position if sprite else Vector2.ZERO
+	var spawn_pos = sprite.global_position if sprite else global_position
 	label.size = Vector2(240, 40)
 	label.position = spawn_pos + Vector2(-120, -45)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -184,7 +184,8 @@ void fragment() {
 	label.add_theme_font_size_override("font_size", 26)
 	label.add_theme_color_override("font_outline_color", Color(0.2, 0.1, 0.0, 0.9))
 	label.add_theme_constant_override("outline_size", 6)
-	add_child(label)
+	var label_parent = get_parent() if get_parent() else self
+	label_parent.add_child(label)
 	var blink = create_tween().set_loops()
 	blink.tween_property(label, "modulate:a", 0.4, 0.6).set_trans(Tween.TRANS_SINE)
 	blink.tween_property(label, "modulate:a", 1.0, 0.6).set_trans(Tween.TRANS_SINE)
@@ -196,8 +197,10 @@ void fragment() {
 
 func _spawn_stardust() -> void:
 	var particles = CPUParticles2D.new()
-	var spawn_pos = sprite.position if sprite else Vector2.ZERO
-	particles.position = spawn_pos
+	var spawn_pos = sprite.global_position if sprite else global_position
+	var parent_node = get_parent() if get_parent() else self
+	parent_node.add_child(particles)
+	particles.global_position = spawn_pos
 	particles.amount = 180
 	particles.lifetime = 1.4
 	particles.one_shot = true
