@@ -170,8 +170,6 @@ void fragment() {
 		dissolve_tween.tween_method(func(val): mat.set_shader_parameter("dissolve_amount", val), 0.0, 1.0, 1.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 		dissolve_tween.tween_callback(func(): sprite.visible = false)
 
-	# Spawn glowing particles (subtle).
-	_spawn_stardust()
 
 	# Message centered on character.
 	var label = Label.new()
@@ -194,36 +192,3 @@ void fragment() {
 	if camera:
 		var zoom_tween = create_tween()
 		zoom_tween.tween_property(camera, "zoom", Vector2(1.6, 1.6), 0.45).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-
-func _spawn_stardust() -> void:
-	var particles = CPUParticles2D.new()
-	var spawn_pos = sprite.global_position if sprite else global_position
-	var parent_node = get_parent() if get_parent() else self
-	parent_node.add_child(particles)
-	particles.global_position = spawn_pos
-	# Gradual upward drift (not a burst) to look like dissolving.
-	particles.amount = 220
-	particles.lifetime = 1.6
-	particles.one_shot = true
-	particles.explosiveness = 0.0
-	particles.local_coords = false
-	particles.direction = Vector2(0, -1)
-	particles.spread = 18.0
-	particles.initial_velocity_min = 20.0
-	particles.initial_velocity_max = 55.0
-	particles.gravity = Vector2(0, -8)
-	particles.damping_min = 30.0
-	particles.damping_max = 60.0
-	particles.scale_amount_min = 0.6
-	particles.scale_amount_max = 1.4
-
-	var grad = Gradient.new()
-	grad.add_point(0.0, Color(1.0, 0.95, 0.7, 1.0))
-	grad.add_point(0.5, Color(1.0, 0.7, 0.3, 0.8))
-	grad.add_point(1.0, Color(0.8, 0.9, 1.0, 0.0))
-	var tex = GradientTexture1D.new()
-	tex.gradient = grad
-	particles.color_ramp = tex
-
-	add_child(particles)
-	particles.emitting = true
