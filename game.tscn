@@ -47,20 +47,6 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 [node name="Game" type="Node2D" unique_id=1052284187]
 
-[node name="MarsBackground" type="TextureRect" parent="." unique_id=1012979812]
-texture_filter = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -318.0
-offset_top = -201.0
-offset_right = 728.0
-offset_bottom = 311.0
-grow_horizontal = 2
-grow_vertical = 2
-expand_mode = 1
-stretch_mode = 1
-
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1088402511]
 position_smoothing_enabled = true
 rotation_smoothing_enabled = true
