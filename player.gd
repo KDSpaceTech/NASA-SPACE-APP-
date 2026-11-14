@@ -25,6 +25,16 @@ signal hp_changed(new_hp: float)
 signal food_changed(new_food: float)
 
 func _ready() -> void:
+	# Generate surrounding map once.
+	if get_parent() and not get_parent().has_node("Map"):
+		var ms = load("res://map.gd")
+		if ms:
+			var m = Node2D.new()
+			m.name = "Map"
+			m.set_script(ms)
+			get_parent().add_child(m)
+			get_parent().move_child(m, 0)
+
 	if Global.has_save():
 		Global.load_game()
 		if Global.player_hp > 0.0:
