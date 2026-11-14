@@ -29,7 +29,7 @@ func _ready() -> void:
 		Global.load_game()
 		if Global.player_hp > 0.0:
 			hp = Global.player_hp
-			food = Global.player_food
+			food = Global.player_food if Global.player_food > 0.0 else max_food
 			if Global.player_position != Vector2.ZERO:
 				global_position = Global.player_position
 		else:
@@ -201,20 +201,21 @@ func _spawn_stardust() -> void:
 	var parent_node = get_parent() if get_parent() else self
 	parent_node.add_child(particles)
 	particles.global_position = spawn_pos
-	particles.amount = 180
-	particles.lifetime = 1.4
+	# Gradual upward drift (not a burst) to look like dissolving.
+	particles.amount = 220
+	particles.lifetime = 1.6
 	particles.one_shot = true
-	particles.explosiveness = 0.85
+	particles.explosiveness = 0.0
 	particles.local_coords = false
 	particles.direction = Vector2(0, -1)
-	particles.spread = 55.0
-	particles.initial_velocity_min = 40.0
-	particles.initial_velocity_max = 100.0
-	particles.gravity = Vector2(0, -15)
-	particles.damping_min = 20.0
-	particles.damping_max = 40.0
-	particles.scale_amount_min = 0.8
-	particles.scale_amount_max = 2.0
+	particles.spread = 18.0
+	particles.initial_velocity_min = 20.0
+	particles.initial_velocity_max = 55.0
+	particles.gravity = Vector2(0, -8)
+	particles.damping_min = 30.0
+	particles.damping_max = 60.0
+	particles.scale_amount_min = 0.6
+	particles.scale_amount_max = 1.4
 
 	var grad = Gradient.new()
 	grad.add_point(0.0, Color(1.0, 0.95, 0.7, 1.0))
