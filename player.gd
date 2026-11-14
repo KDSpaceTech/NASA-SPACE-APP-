@@ -50,6 +50,11 @@ func _physics_process(_delta):
 	velocity = input_direction * speed
 	move_and_slide()
 
+	# Camera follows the character.
+	if camera:
+		var target = sprite.global_position if sprite else global_position
+		camera.global_position = target
+
 func _process(delta: float) -> void:
 	if _dead:
 		return
