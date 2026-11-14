@@ -66,7 +66,7 @@ position_smoothing_enabled = true
 rotation_smoothing_enabled = true
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=1534722963]
-position = Vector2(-185, -49)
+position = Vector2(0, 0)
 script = ExtResource("2_e2o6t")
 
 [node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=229687593]

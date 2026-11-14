@@ -203,8 +203,11 @@ void fragment() {
 		zoom_tween.tween_property(camera, "zoom", Vector2(1.6, 1.6), 0.45).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 func _create_map() -> void:
-	print("CREATE MAP CALLED")
 	var ms = load("res://map.gd")
+	# Hide the old Mars background so the new map is visible.
+	var bg = get_parent().get_node_or_null("MarsBackground")
+	if bg:
+		bg.visible = false
 	if ms == null or get_parent() == null:
 		return
 	if get_parent().has_node("Map"):
