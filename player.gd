@@ -11,6 +11,11 @@ extends CharacterBody2D
 @export var hungry_threshold: float = 25.0
 @export var eat_amount: float = 30.0
 
+# Spawn on the cafeteria floor of the station map.
+const DEFAULT_SPAWN := Vector2(-10, 45)
+# Anything saved outside this box belongs to an older map and is ignored.
+const MAP_BOUNDS := Rect2(-700, -400, 1400, 800)
+
 var hp: float
 var food: float
 var _dead: bool = false
@@ -25,12 +30,13 @@ signal hp_changed(new_hp: float)
 signal food_changed(new_food: float)
 
 func _ready() -> void:
+	global_position = DEFAULT_SPAWN
 	if Global.has_save():
 		Global.load_game()
 		if Global.player_hp > 0.0:
 			hp = Global.player_hp
 			food = Global.player_food if Global.player_food > 0.0 else max_food
-			if Global.player_position != Vector2.ZERO:
+			if Global.player_position != Vector2.ZERO and MAP_BOUNDS.has_point(Global.player_position):
 				global_position = Global.player_position
 		else:
 			# Don't restore a dead state; start fresh.

@@ -1,12 +1,14 @@
 [gd_scene format=3 uid="uid://dhbkugd61cksy"]
 
 [ext_resource type="Script" uid="uid://cb22jbw2bp4yn" path="res://player.gd" id="2_e2o6t"]
+[ext_resource type="Texture2D" path="res://assets/space_map.png" id="3_map"]
+[ext_resource type="Script" path="res://map.gd" id="4_mapscript"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_feb5d"]
 load_path = "res://.godot/imported/Character.png-bbf5947120bf90fb25be265ba323242e.ctex"
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5utp4"]
-radius = 40.04997
+radius = 22.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hp_bg"]
 bg_color = Color(0.15, 0.05, 0.05, 0.85)
@@ -47,21 +49,31 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 [node name="Game" type="Node2D" unique_id=1052284187]
 
+[node name="SpaceMap" type="Sprite2D" parent="." unique_id=1052284188]
+texture = ExtResource("3_map")
+scale = Vector2(0.5, 0.5)
+z_index = -10
+script = ExtResource("4_mapscript")
+
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1088402511]
+zoom = Vector2(1.4, 1.4)
 position_smoothing_enabled = true
 rotation_smoothing_enabled = true
+limit_left = -688
+limit_top = -384
+limit_right = 688
+limit_bottom = 384
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=1534722963]
-position = Vector2(0, 0)
+position = Vector2(-10, 45)
 script = ExtResource("2_e2o6t")
 
 [node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=229687593]
-position = Vector2(158.925, 85.425)
-scale = Vector2(0.18742204, 0.16734104)
+scale = Vector2(0.14993763, 0.13387283)
 texture = SubResource("CompressedTexture2D_feb5d")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=1174978447]
-position = Vector2(154, 106)
+position = Vector2(0, 6)
 shape = SubResource("CircleShape2D_5utp4")
 
 
