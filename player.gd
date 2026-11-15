@@ -67,6 +67,7 @@ func _physics_process(_delta: float) -> void:
 func _process(delta: float) -> void:
 	if _dead or Global.ui_open:
 		return
+	delta = minf(delta, 0.25)
 
 	food = max(food - hunger_drain_rate * delta, 0.0)
 

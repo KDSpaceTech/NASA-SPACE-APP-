@@ -4,15 +4,28 @@ extends Node2D
 
 const BG_SCALE := 1.6
 const ROOM_HALF := Vector2(837, 410)
-const SPAWN := Vector2(0, 300)
+const SPAWN := Vector2(0, 350)
 
+# Planter racks: four beds on the left of the central tank, two on the right.
 const BED_POSITIONS := [
-	Vector2(-525, 330), Vector2(-315, 330), Vector2(-105, 330),
-	Vector2(105, 330), Vector2(315, 330), Vector2(525, 330),
+	Vector2(-545, 110), Vector2(-545, 260),
+	Vector2(-350, 110), Vector2(-350, 260),
+	Vector2(390, 60), Vector2(390, 220),
 ]
-const COMPUTER_POS := Vector2(-340, 70)
-const OXYGEN_POS := Vector2(340, 70)
-const FUEL_POS := Vector2(-700, 250)
+const COMPUTER_POS := Vector2(-300, -18)
+const OXYGEN_POS := Vector2(150, 350)
+const FUEL_POS := Vector2(-150, 350)
+
+# Solid furniture painted into the background (world coordinates).
+const PROP_COLLIDERS := [
+	Rect2(-517, -234, 432, 200),   # workbench / desk with monitors
+	Rect2(-797, -178, 144, 248),   # left wall unit
+	Rect2(-797, 118, 200, 272),    # bottom-left console
+	Rect2(-221, -10, 448, 290),    # central hydroponics tank
+	Rect2(523, -66, 168, 136),     # right console
+	Rect2(587, 118, 160, 144),     # right cabinet
+	Rect2(603, 102, 160, 288),     # bottom-right console
+]
 
 const O2_BREATH_DRAIN := 1.0
 const O2_MACHINE_GAIN := 0.55
@@ -60,7 +73,7 @@ func _build_background() -> void:
 	bg.z_index = -20
 	add_child(bg)
 
-	# Invisible walls around the room.
+	# Invisible walls around the room + solid furniture baked in the background.
 	var walls := StaticBody2D.new()
 	walls.name = "Walls"
 	for rect in [
@@ -69,13 +82,19 @@ func _build_background() -> void:
 		Rect2(-ROOM_HALF.x - 40, -ROOM_HALF.y, 40, ROOM_HALF.y * 2),
 		Rect2(ROOM_HALF.x, -ROOM_HALF.y, 40, ROOM_HALF.y * 2),
 	]:
-		var shape := CollisionShape2D.new()
-		var rs := RectangleShape2D.new()
-		rs.size = rect.size
-		shape.shape = rs
-		shape.position = rect.position + rect.size * 0.5
-		walls.add_child(shape)
+		_add_box(walls, rect)
+	# Desk, consoles and the central hydroponics tank are solid.
+	for rect in PROP_COLLIDERS:
+		_add_box(walls, rect)
 	add_child(walls)
+
+func _add_box(body: StaticBody2D, rect: Rect2) -> void:
+	var shape := CollisionShape2D.new()
+	var rs := RectangleShape2D.new()
+	rs.size = rect.size
+	shape.shape = rs
+	shape.position = rect.position + rect.size * 0.5
+	body.add_child(shape)
 
 func _build_beds() -> void:
 	var script := preload("res://GrowBed.gd")
@@ -90,23 +109,25 @@ func _build_beds() -> void:
 		beds.append(bed)
 
 func _build_machines() -> void:
-	machines.append(_machine("computer", GameData.TEX_COMPUTER, 92.0, COMPUTER_POS))
-	machines.append(_machine("oxygen", GameData.TEX_OXYGEN, 96.0, OXYGEN_POS))
-	machines.append(_machine("fuel", GameData.TEX_FUEL, 78.0, FUEL_POS))
+	# The shop uses the monitors already drawn on the workbench, so no extra
+	# computer sprite is placed in the room.
+	machines.append(_machine("computer", COMPUTER_POS))
+	machines.append(_machine("oxygen", OXYGEN_POS))
+	machines.append(_machine("fuel", FUEL_POS))
 
-func _machine(kind: String, tex: String, height: float, pos: Vector2) -> Node2D:
+func _machine(kind: String, pos: Vector2) -> Node2D:
 	var m := Node2D.new()
 	m.set_script(preload("res://Machine.gd"))
 	m.name = "Machine_" + kind
 	m.position = pos
 	add_child(m)
-	m.setup(kind, tex, height)
+	m.setup(kind)
 	return m
 
 func _build_camera() -> void:
 	camera = Camera2D.new()
 	camera.name = "Camera2D"
-	camera.zoom = Vector2(1.0, 1.0)
+	camera.zoom = Vector2(0.85, 0.85)
 	camera.position_smoothing_enabled = true
 	camera.limit_left = int(-ROOM_HALF.x)
 	camera.limit_top = int(-ROOM_HALF.y)
@@ -167,6 +188,8 @@ func _apply_offline_growth() -> void:
 func _process(delta: float) -> void:
 	if player == null:
 		return
+	# Do not let a long stall (window drag, shader compile) drain the bars.
+	delta = minf(delta, 0.25)
 	_update_focus()
 
 	if Global.ui_open:

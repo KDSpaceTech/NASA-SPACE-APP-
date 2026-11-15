@@ -31,8 +31,21 @@ func _ready() -> void:
 	label.position = Vector2(-75, BODY_TOP - 20)
 	add_child(label)
 
+	_build_collision()
 	refresh(true)
 	set_process(true)
+
+func _build_collision() -> void:
+	# The planter is solid: the player can not walk through the beds.
+	var body := StaticBody2D.new()
+	body.name = "Body"
+	var cs := CollisionShape2D.new()
+	var rs := RectangleShape2D.new()
+	rs.size = Vector2(BED_W, BODY_BOTTOM - BODY_TOP)
+	cs.shape = rs
+	cs.position = Vector2(0, (BODY_TOP + BODY_BOTTOM) * 0.5)
+	body.add_child(cs)
+	add_child(body)
 
 func setup(bed_index: int) -> void:
 	index = bed_index
