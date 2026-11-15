@@ -7,3 +7,6 @@ Thumbs.db
 # Builds
 *.exe
 *.pck
+
+# Archives
+*.zip
