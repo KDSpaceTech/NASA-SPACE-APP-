@@ -1,5 +1,10 @@
 # Kế hoạch logic gameplay — Module nhà kính vũ trụ
 
+> **Trạng thái: đã triển khai (bản chơi được).** Tài liệu này là bản thiết kế ban đầu;
+> phần đã làm thực tế nằm ở mục 8 bên dưới. Những chỗ khác với thiết kế (dùng
+> dictionary thay cho `.tres`, gộp autoload vào `Global.gd`) là cố ý để code gọn và
+> chắc chắn hơn.
+
 Tài liệu này mô tả kiến trúc và logic cho bộ asset trong
 `NasaspaceApp-Nguyen_Khang_Sinh` (cây trồng, thiết bị, túi đồ, background)
 và cách ghép vào project Godot hiện tại (`NasaSpaceApp\4`).
@@ -296,3 +301,40 @@ Chỉ số phụ (O₂, fuel) tạo mục tiêu dài hạn: đạt O₂ ≥ X v�
 3. Có **shop/kinh tế** (credits, mua hạt) hay chỉ cần hạt vô hạn cho đơn giản?
 4. Cây có **lớn khi tắt game** (offline growth) không?
 5. Có cần nhiều luống + nâng cấp (mở khóa cây) hay chỉ 1 luống demo?
+
+→ Đã chốt cả 5: scene mới mở từ Menu · O₂ là cơ chế sống còn · có shop/credits ·
+có lớn offline · 6 luống, 9 loài cây.
+
+---
+
+## 8. Trạng thái triển khai (bản đang chạy)
+
+### 8.1 File thực tế
+
+| File | Vai trò |
+|---|---|
+| `greenhouse.tscn` + `greenhouse.gd` | Scene nhà kính, dựng toàn bộ thế giới bằng code |
+| `Global.gd` (autoload) | HP/Food/O₂/nước/power/fuel/credits, túi đồ, 6 luống, save v2, lớn offline |
+| `GameData.gd` | Bảng 9 loài cây + item (thay cho `.tres`) |
+| `GrowBed.gd` | Một luống: sprite cây 4 giai đoạn, thanh nước, nhãn trạng thái |
+| `Machine.gd` | Máy tính (shop), máy tạo O₂, bồn nhiên liệu |
+| `HUD.gd` | 3 thanh HP/Food/O₂, credits, nước/power/fuel, prompt, toast |
+| `UI.gd` | Panel shop, túi đồ, chọn hạt |
+| `player.gd` | Di chuyển, đói, chết (hiệu ứng tan biến "Y O U   D I E"), hồi sinh |
+| `assets/` | Sprite đã cắt nền trắng, trim, chuẩn hoá kích thước |
+
+### 8.2 Điều khiển
+
+- `WASD` / phím mũi tên: di chuyển
+- `E`: tương tác (trồng / tưới / thu hoạch / dùng máy)
+- `TAB`: túi đồ
+- `Q`: ăn nông sản tốt nhất trong túi
+- `ESC`: đóng panel
+
+### 8.3 Số liệu cân bằng đang dùng
+
+- Thở: −1.0 O₂/s · Máy tạo O₂: +0.55 O₂/s, tốn 0.7 power/s · Pin mặt trời: +1.2 power/s
+- Hết O₂: −5 HP/s. Cây trưởng thành nhả 0.35–0.8 O₂/s mỗi cây.
+- Nước trong luống cạn dần trong ~1.35× thời gian lớn; khô 45 s → cây chết, phải nhổ.
+- Lớn offline: mô phỏng lại theo `saved_at`, tối đa 1 giờ.
+
