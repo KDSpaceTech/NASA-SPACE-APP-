@@ -50,6 +50,17 @@ func _physics_process(_delta):
 	velocity = input_direction * speed
 	move_and_slide()
 
+	# Walk animation (Among Us-like waddle) when moving.
+	if sprite:
+		if velocity.length() > 1.0:
+			var t = Time.get_ticks_msec() / 1000.0
+			var wobble = sin(t * 12.0) * 0.08
+			sprite.rotation = wobble
+			sprite.scale = Vector2(1.0 + abs(sin(t * 12.0)) * 0.06, 1.0 - abs(sin(t * 12.0)) * 0.04)
+		else:
+			sprite.rotation = 0.0
+			sprite.scale = Vector2(1.0, 1.0)
+
 	# Camera follows the character.
 	if camera:
 		var target = sprite.global_position if sprite else global_position
